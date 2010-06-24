@@ -5,6 +5,7 @@ import shlex
 #TODO: handle exceptions more elegantly
 
 def searchCaches(caches, search=""):
+    """Search Caches"""
     (options, args, search) = parse(search)
     
     if args:
@@ -12,7 +13,7 @@ def searchCaches(caches, search=""):
     cacheList = parseOptions(caches, options)
     
     act = 0
-    while act != -1:
+    while act != "-1":
         print "Search Menu - Your current search returned", len(cacheList), "caches."
         print "1) *Refine Search"
         print "2) *Clear Search"
@@ -25,10 +26,26 @@ def searchCaches(caches, search=""):
         print "9) Output to HTML"
         print "Any other key to return to main menu"
         choice = raw_input("")
-        actions = {"1": searchCaches(caches, search), "2": searchCaches(caches), "7": outputGPXToGarmin(cacheList)}
-        act = actions.get(choice, lambda: -1)
-    
+        actions = {"1": 'searchCaches(caches, search)', "2": 'searchCaches(caches)', "3": 'viewCacheList(cacheList)', "7": 'outputGPXToGarmin(cacheList)'}
+        print "choice is ", choice, "."
+        act = actions.get(choice, "-1")
+        eval(act)
     return cacheList
+    
+def viewCacheList(cacheList):
+    """View Cache List"""
+    #If lots of caches, get users confirmation
+    if len(cacheList) > 20:
+        print "List is long -", len(cacheList), "caches."
+        choice = raw_input("Are you sure you wish to view the full list? (y/Y)")
+        if choice != "y" and choice != "Y":
+            return
+    #display caches
+    for cache in cacheList:
+        print "----------------------------------"
+        print cache.cacheName, "by", cache.owner, "hidden on", cache.cacheDate, "in", cache.state
+        print "D:", cache.difficulty, "T:", cache.terrain, cache.cacheType, cache.container
+        print 
     
 def outputGPXToGarmin(cacheList=[]):
     """Outputs a gpx file to garminOutputDDMMYY.gpx to send to gps."""
