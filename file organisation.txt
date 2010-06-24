@@ -1,0 +1,63 @@
+Geocache class
+	init
+	checkUpdateCache
+	updateCache
+	checkUnique
+	distanceToHome
+			look into using __slots__ to lock down attributes
+
+Utility module
+	DMToDD(string)
+	DDToDM(float, latOrLon)
+	toBool(string)
+	convertToRange(float)
+	initializeMatrix()
+	outputMatrix(matrix)
+	stateCode(states)
+	countryCode(countries)
+
+homeLocation class
+	init
+	setLocation	#menu
+	enterNewLocation
+	setCurrentLocation
+	deleteLocation
+	noLocationChoice
+
+stats module
+	statsToConsole(caches)
+	statsToHTML(caches)
+
+unused module
+	printCacheFull
+	printCacheMid
+	printCacheShort
+	displayCache
+	debug()
+	
+main
+	calculateMatrix	#requires caches
+	readGPX			#requires caches but could return a list?
+	getText(nodelist)
+	printHeader(name, timeCreated, numWpts)
+	searchMatrix(matrix, output)
+	pickGPX()
+	loadDatabase
+	saveDatabase
+	initHTML(outFile)
+	exportHTML(cache, outFile, desc=1)
+	showHTML(outFile)
+	closestCaches()
+	outputCSV()
+	removeUnfoundCaches()
+	DTComboMatrix()
+	importGPX()
+	outputCacheList()
+	outputGPXToGarmin()
+	setFound(gcidList)
+	setFTF(gcidList)
+	buildListOfGCID()
+	alterStatus()
+	mainMenu()
+	
+	
