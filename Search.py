@@ -14,12 +14,18 @@ def searchCaches(caches, search=""):
     act = 0
     while act != -1:
         print "Search Menu - Your current search returned", len(cacheList), "caches."
-        print "1) Refine Search"
-        print "2) CSV,HTML,TextOnScreen,setFTF,setFound,remove,"
-        print "3) Send to GPS"
+        print "1) *Refine Search"
+        print "2) *Clear Search"
+        print "3) View TextOnScreen"
+        print "4) Set FTF"
+        print "5) Set Found"
+        print "6) Remove caches"
+        print "7) *Send to GPS"
+        print "8) Output to CSV"
+        print "9) Output to HTML"
         print "Any other key to return to main menu"
         choice = raw_input("")
-        actions = {"1": searchCaches(caches, search), "3": outputGPXToGarmin(cacheList)}
+        actions = {"1": searchCaches(caches, search), "2": searchCaches(caches), "7": outputGPXToGarmin(cacheList)}
         act = actions.get(choice, lambda: -1)
     
     return cacheList
