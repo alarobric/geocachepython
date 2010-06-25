@@ -242,6 +242,22 @@ def countryCode(countries):
     return countryList 
     #more country codes at http://www.iso.org/iso/english_country_names_and_code_elements
     
+def viewCacheList(cacheList):
+    """View Cache List"""
+    #If lots of caches, get users confirmation
+    if len(cacheList) > 20:
+        print "List is long -", len(cacheList), "caches."
+        choice = raw_input("Are you sure you wish to view the full list? (y/Y)")
+        if choice != "y" and choice != "Y":
+            return
+    #display caches
+    for cache in cacheList:
+        print "----------------------------------"
+        print cache.cacheName, "by", cache.owner, "hidden on", cache.cacheDate, "in", cache.state
+        print "D:", cache.difficulty, "T:", cache.terrain, cache.cacheType, cache.container
+        print 
+    return
+    
 if __name__ == '__main__':
     # test myself
     import doctest

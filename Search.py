@@ -5,7 +5,12 @@ import shlex
 #TODO: handle exceptions more elegantly
 
 def searchCaches(caches, search=""):
-    """Search Caches"""
+    """Search Caches Menu
+    
+    Gets search string from user, parses it and presents a menu of 
+    options to perform on the caches selected
+    """
+    
     (options, args, search) = parse(search)
     
     if args:
@@ -17,35 +22,38 @@ def searchCaches(caches, search=""):
         print "Search Menu - Your current search returned", len(cacheList), "caches."
         print "1) *Refine Search"
         print "2) *Clear Search"
-        print "3) View TextOnScreen"
-        print "4) Set FTF"
-        print "5) Set Found"
+        print "3) *View TextOnScreen"
+        print "4) *Set FTF"
+        print "5) *Set Found"
         print "6) Remove caches"
         print "7) *Send to GPS"
         print "8) Output to CSV"
         print "9) Output to HTML"
         print "Any other key to return to main menu"
         choice = raw_input("")
-        actions = {"1": 'searchCaches(caches, search)', "2": 'searchCaches(caches)', "3": 'viewCacheList(cacheList)', "7": 'outputGPXToGarmin(cacheList)'}
+        actions = {"1": 'searchCaches(caches, search)', "2": 'searchCaches(caches)', "3": 'utility.viewCacheList(cacheList)', "4": 'setFTF(cacheList)', "5": 'setFound(cacheList)', "7": 'outputGPXToGarmin(cacheList)'}
         print "choice is ", choice, "."
         act = actions.get(choice, "-1")
         eval(act)
     return cacheList
     
-def viewCacheList(cacheList):
-    """View Cache List"""
-    #If lots of caches, get users confirmation
-    if len(cacheList) > 20:
-        print "List is long -", len(cacheList), "caches."
-        choice = raw_input("Are you sure you wish to view the full list? (y/Y)")
-        if choice != "y" and choice != "Y":
-            return
-    #display caches
+def setFound(cacheList):
+    """Sets caches in cacheList to found.
+    
+    Useful when a new stats query is unavailable.
+    """
     for cache in cacheList:
-        print "----------------------------------"
-        print cache.cacheName, "by", cache.owner, "hidden on", cache.cacheDate, "in", cache.state
-        print "D:", cache.difficulty, "T:", cache.terrain, cache.cacheType, cache.container
-        print 
+        cache.found = 1
+        print cache.gcid, "is now set to found"
+                        
+def setFTF(cacheList):
+    """Sets caches in cacheList to ftf.
+    
+    Necessary since geocaching.com does not track ftf.
+    """
+    for cache in cacheList:
+        cache.ftf = 1
+        print cache.gcid, "is now set to ftf"
     
 def outputGPXToGarmin(cacheList=[]):
     """Outputs a gpx file to garminOutputDDMMYY.gpx to send to gps."""
@@ -111,6 +119,15 @@ def outputGPXToGarmin(cacheList=[]):
     p.wait()
 
 def parse(search = ""):
+	"""Get a search string from the user and parse it into a dictionary
+	
+	Optional argument of a previously used search string to display.
+	TODO: find some way to use previous string but allow it's editing as well
+	
+	Returns: (options, args, search)
+	options and args from parser and search string parsed
+	"""
+	
     from optparse import OptionParser
     parser = OptionParser(usage = "usage: [option] <option argument> ...")
     
@@ -155,7 +172,7 @@ def parse(search = ""):
             help="state/province, use exact string used by groundspeak, or US or CA state codes, ex. BC,WA,NY,ON")
     parser.add_option("-o", "--owner", dest="owner",
             help="owner, finds all caches with owners containing your string as a substring")
-    #cacheDate, placedBy, dateFound, dateImported, travelbug
+    #TODO: cacheDate, placedBy, dateFound, dateImported, travelbug, distance from home
 
     s = True
     while (s == True):
@@ -174,6 +191,10 @@ def parse(search = ""):
     return (options, args, search)
    
 def parseOptions(caches, options):
+	"""Parse through the dictionary of option from OptionParser and return a list of cache matching the search string
+	
+	TODO: test cases
+	"""
     cacheList = caches[:]
     
     #TODO: need other way of removing caches
@@ -319,3 +340,8 @@ def parseOptions(caches, options):
             if cache.state not in states:
                 cacheList.remove(cache)
     return cacheList
+
+if __name__ == '__main__':
+    print "Running tests:"
+    import doctest
+    doctest.testmod()
