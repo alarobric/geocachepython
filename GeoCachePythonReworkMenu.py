@@ -406,6 +406,7 @@ def alterStatus():
 
 def searchCachesCall():
     list = Search.searchCaches(caches)
+    print "in searchCachesCall"
     print len(list)
 
 def preferencesMenu():
