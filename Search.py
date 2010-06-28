@@ -1,11 +1,19 @@
 #Search module
 import utility
-import shlex
+import shlex, subprocess
+import datetime
+import os.path
+from unidecode import unidecode
 
 #TODO: handle exceptions more elegantly
 
 def searchCaches(caches, search=""):
-    """Search Caches"""
+    """Search Caches Menu
+    
+    Gets search string from user, parses it and presents a menu of 
+    options to perform on the caches selected
+    """
+    
     (options, args, search) = parse(search)
     
     if args:
@@ -17,42 +25,45 @@ def searchCaches(caches, search=""):
         print "Search Menu - Your current search returned", len(cacheList), "caches."
         print "1) *Refine Search"
         print "2) *Clear Search"
-        print "3) View TextOnScreen"
-        print "4) Set FTF"
-        print "5) Set Found"
+        print "3) *View TextOnScreen"
+        print "4) *Set FTF"
+        print "5) *Set Found"
         print "6) Remove caches"
         print "7) *Send to GPS"
         print "8) Output to CSV"
         print "9) Output to HTML"
         print "Any other key to return to main menu"
         choice = raw_input("")
-        actions = {"1": 'searchCaches(caches, search)', "2": 'searchCaches(caches)', "3": 'viewCacheList(cacheList)', "7": 'outputGPXToGarmin(cacheList)'}
+        actions = {"1": 'searchCaches(caches, search)', "2": 'searchCaches(caches)', "3": 'utility.viewCacheList(cacheList)', "4": 'setFTF(cacheList)', "5": 'setFound(cacheList)', "7": 'outputGPXToGarmin(cacheList)'}
         print "choice is ", choice, "."
         act = actions.get(choice, "-1")
         eval(act)
     return cacheList
     
-def viewCacheList(cacheList):
-    """View Cache List"""
-    #If lots of caches, get users confirmation
-    if len(cacheList) > 20:
-        print "List is long -", len(cacheList), "caches."
-        choice = raw_input("Are you sure you wish to view the full list? (y/Y)")
-        if choice != "y" and choice != "Y":
-            return
-    #display caches
+def setFound(cacheList):
+    """Sets caches in cacheList to found.
+    
+    Useful when a new stats query is unavailable.
+    """
     for cache in cacheList:
-        print "----------------------------------"
-        print cache.cacheName, "by", cache.owner, "hidden on", cache.cacheDate, "in", cache.state
-        print "D:", cache.difficulty, "T:", cache.terrain, cache.cacheType, cache.container
-        print 
+        cache.found = 1
+        print cache.gcid, "is now set to found"
+                        
+def setFTF(cacheList):
+    """Sets caches in cacheList to ftf.
+    
+    Necessary since geocaching.com does not track ftf.
+    """
+    for cache in cacheList:
+        cache.ftf = 1
+        print cache.gcid, "is now set to ftf"
     
 def outputGPXToGarmin(cacheList=[]):
     """Outputs a gpx file to garminOutputDDMMYY.gpx to send to gps."""
     
     #TODO: smart name fields
-    #TODO: integrate with gpsbabel
-    #TODO: work out other options for export?
+    #TODO: integrate with gpsbabel (perhaps use gpsbabel-python library
+    #TODO: output proper xml through minidom
     
     #length of name field on GPS
     #need when specifying an output
@@ -71,46 +82,50 @@ def outputGPXToGarmin(cacheList=[]):
     f.write(s)
     #TODO should write bounds?
     
-    for cacheID in cacheList:
-        foundOutput = False
-        for cache in caches:
-            if (cache.gcid == cacheID):
-                foundOutput = True
-                s = '<wpt lat="' + cache.lat + '" lon="' + cache.lon + '">\n'
-                f.write(s)
-                #<wpt lat="44.221783290" lon="-76.488766624">
-                
-                #is elevation necessary?
-                #<ele>119.088135</ele>
-                
-                #s='\t<names>' + cache.gcid[:nameLength] + '</name>\n'
-                s = '\t<name>' + cache.cacheName[:nameLength] + '</name>\n'
-                f.write(s)
-                #<name>001</name>
-                
-                #unused by mine
-                #<cmt>001</cmt>
-                #<desc>001</desc>
-                
-                #what are the choices?
-                #know Flag, Geocache
-                f.write('\t<sym>Geocache</sym>\n')
-                #<sym>Flag</sym>
-                
-                f.write('</wpt>\n')
-        if foundOutput == False:
-            print "Didn't find", cacheID
+    for cache in cacheList:
+        s = '<wpt lat="' + cache.lat + '" lon="' + cache.lon + '">\n'
+        f.write(s)
+        #<wpt lat="44.221783290" lon="-76.488766624">
+        
+        #is elevation necessary?
+        #<ele>119.088135</ele>
+        
+        #s='\t<names>' + cache.gcid[:nameLength] + '</name>\n'
+        s = '\t<name>' + unidecode(cache.cacheName[:nameLength]).replace('&', '&amp;').replace('<', '&lt;') + '</name>\n'
+        #.encode("ascii", "xmlcharrefreplace")
+        f.write(s)
+        #<name>001</name>
+        
+        #unused by mine
+        #<cmt>001</cmt>
+        #<desc>001</desc>
+        
+        #what are the choices?
+        #know Flag, Geocache
+        f.write('\t<sym>Geocache</sym>\n')
+        #<sym>Flag</sym>
+        
+        f.write('</wpt>\n')
     f.write('</gpx>')
     f.close()
     
     os.getcwd()
-    args = "sudo gpsbabel -i gpx -f " + "'" + os.getcwd() + "/" + file + "' -o garmin -F /dev/ttyUSB0"
+    args = "sudo gpsbabel -i gpx -f " + "'" + os.getcwd() + "/" + outFile + "' -o garmin -F /dev/ttyUSB0"
     args = shlex.split(args)
     #print args
     p = subprocess.Popen(args, stdout=subprocess.PIPE)
     p.wait()
 
 def parse(search = ""):
+    """Get a search string from the user and parse it into a dictionary
+    
+    Optional argument of a previously used search string to display.
+    TODO: find some way to use previous string but allow it's editing as well
+    
+    Returns: (options, args, search)
+    options and args from parser and search string parsed
+    """
+    
     from optparse import OptionParser
     parser = OptionParser(usage = "usage: [option] <option argument> ...")
     
@@ -155,7 +170,7 @@ def parse(search = ""):
             help="state/province, use exact string used by groundspeak, or US or CA state codes, ex. BC,WA,NY,ON")
     parser.add_option("-o", "--owner", dest="owner",
             help="owner, finds all caches with owners containing your string as a substring")
-    #cacheDate, placedBy, dateFound, dateImported, travelbug
+    #TODO: cacheDate, placedBy, dateFound, dateImported, travelbug, distance from home
 
     s = True
     while (s == True):
@@ -174,6 +189,10 @@ def parse(search = ""):
     return (options, args, search)
    
 def parseOptions(caches, options):
+    """Parse through the dictionary of option from OptionParser and return a list of cache matching the search string
+    
+    TODO: test cases
+    """
     cacheList = caches[:]
     
     #TODO: need other way of removing caches
@@ -251,7 +270,7 @@ def parseOptions(caches, options):
         if first == -1 or second == -1:
             raise Exception("Error parsing latitude")
         for cache in cacheList[:]:
-            if cache.lat < first or cache.lat > second:
+            if cache.lat <= first or cache.lat >= second:
                 cacheList.remove(cache)
     if options.lon:
         print "lon", options.lon
@@ -263,7 +282,7 @@ def parseOptions(caches, options):
         if first == -1 or second == -1:
             raise Exception("Error parsing latitude")
         for cache in cacheList[:]:
-            if cache.lon < first or cache.lon > second:
+            if cache.lon <= first or cache.lon >= second:
                 cacheList.remove(cache)
     if options.cacheName:
         print "name", options.cacheName
@@ -319,3 +338,8 @@ def parseOptions(caches, options):
             if cache.state not in states:
                 cacheList.remove(cache)
     return cacheList
+
+if __name__ == '__main__':
+    print "Running tests:"
+    import doctest
+    doctest.testmod()

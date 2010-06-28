@@ -36,7 +36,7 @@ def readGPX(wpts, timeCreated):
         urlElement = getText(wpt.getElementsByTagName("url")[0].childNodes)
         difficultyElement = getText(wpt.getElementsByTagName("groundspeak:difficulty")[0].childNodes)
         terrainElement = getText(wpt.getElementsByTagName("groundspeak:terrain")[0].childNodes)
-        nameElement = getText(wpt.getElementsByTagName("groundspeak:name")[0].childNodes)
+        nameElement = getText(wpt.getElementsByTagName("groundspeak:name")[0].childNodes).encode('utf-8')
         latElement = wpt.attributes["lat"].value
         lonElement = wpt.attributes["lon"].value
         symElement = getText(wpt.getElementsByTagName("sym")[0].childNodes)
@@ -351,40 +351,7 @@ def importGPX():
         print len(caches), "before reading"
         readGPX(wpts, getText(timeCreated.childNodes))
         print len(caches), "after"
-        
-def outputCacheList():
-    """Calls buildListOfGCID() to get caches, then outputs to an html file."""
-    
-    #build list of caches for output
-    cacheList = buildListOfGCID()
-    outFile = 'cacheOutput.html'
-    initHTML(outFile)
-    for cacheGCID in cacheList:
-        for cache in caches:
-            if cache.gcid == cacheGCID:
-                exportHTML(cache, outFile, 2)
-    showHTML(outFile)
-    
-def setFound(gcidList):
-    """Sets caches in gcidList to found.
-    
-    Useful when a new stats query is unavailable.
-    """
-    for cache in caches:
-        if cache.gcid in gcidList:
-            cache.found = 1
-            print cache.gcid, "is now set to found"
-                        
-def setFTF(gcidList):
-    """Sets caches in gcidList to ftf.
-    
-    Necessary since geocaching.com does not track ftf.
-    """
-    for cache in caches:
-        if cache.gcid in gcidList:
-            cache.ftf = 1
-            print cache.gcid, "is now set to ftf"
-    
+          
 def buildListOfGCID():
     """Gets a list of gcids from the user and returns the list."""
     cacheList = []
@@ -394,15 +361,6 @@ def buildListOfGCID():
         if (gcid != "n" and gcid != ""):
             cacheList.append("GC%s" %gcid.upper())
     return cacheList
-        
-def alterStatus():
-    """Menu lets user change found or ftf status of a group of caches."""
-    print "Please choose a task or any key to return to the main menu:"
-    print "1) Set found status"
-    print "2) Set ftf status"
-    choice = raw_input("")
-    actions = {"1": setFound, "2": setFTF}
-    actions.get(choice, mainMenu)(buildListOfGCID())
 
 def searchCachesCall():
     list = Search.searchCaches(caches)
@@ -416,7 +374,7 @@ def preferencesMenu():
         print "1) Set Home Location"
         print "Any other key to return to main menu"
         choice = raw_input("")
-        actions = {"1": HomeLocation.setLocation}
+        actions = {"1": homeLoc.setLocation}
         act = actions.get(choice, lambda: -1)()
     
 def statsToConsoleCall():
