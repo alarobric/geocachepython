@@ -36,7 +36,7 @@ def readGPX(wpts, timeCreated):
         urlElement = getText(wpt.getElementsByTagName("url")[0].childNodes)
         difficultyElement = getText(wpt.getElementsByTagName("groundspeak:difficulty")[0].childNodes)
         terrainElement = getText(wpt.getElementsByTagName("groundspeak:terrain")[0].childNodes)
-        nameElement = getText(wpt.getElementsByTagName("groundspeak:name")[0].childNodes)
+        nameElement = getText(wpt.getElementsByTagName("groundspeak:name")[0].childNodes).encode('utf-8')
         latElement = wpt.attributes["lat"].value
         lonElement = wpt.attributes["lon"].value
         symElement = getText(wpt.getElementsByTagName("sym")[0].childNodes)
@@ -373,7 +373,7 @@ def preferencesMenu():
         print "1) Set Home Location"
         print "Any other key to return to main menu"
         choice = raw_input("")
-        actions = {"1": HomeLocation.setLocation}
+        actions = {"1": homeLoc.setLocation}
         act = actions.get(choice, lambda: -1)()
     
 def statsToConsoleCall():
