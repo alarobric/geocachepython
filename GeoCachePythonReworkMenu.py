@@ -36,7 +36,7 @@ def readGPX(wpts, timeCreated):
         urlElement = getText(wpt.getElementsByTagName("url")[0].childNodes)
         difficultyElement = getText(wpt.getElementsByTagName("groundspeak:difficulty")[0].childNodes)
         terrainElement = getText(wpt.getElementsByTagName("groundspeak:terrain")[0].childNodes)
-        nameElement = getText(wpt.getElementsByTagName("groundspeak:name")[0].childNodes).encode('utf-8')
+        nameElement = getText(wpt.getElementsByTagName("groundspeak:name")[0].childNodes)
         latElement = wpt.attributes["lat"].value
         lonElement = wpt.attributes["lon"].value
         symElement = getText(wpt.getElementsByTagName("sym")[0].childNodes)
@@ -294,29 +294,6 @@ def closestCaches():
     for i in cacheList:
         print i.gcid, i.cacheName, "%0.1fkm" % i.distanceToHome(homeLocation[0])
         
-def outputCSV():
-    """Outputs a list of all found caches to a csv file."""
-        #output found caches to csv for excel use
-    f = codecs.open('foundCache.csv', 'w', "utf-8")
-    f.write("GCID, cacheDate, cacheName, state")
-    
-    for cache in caches:
-        if cache.found == 1:
-            f.write("\n%s,%s,%s,%s" %(cache.gcid, cache.dateFound, cache.cacheName, cache.state))
-
-    f.close()
-    print "foundCache.csv written successfully"        
-       
-def removeUnfoundCaches():
-    """Remove unfound caches from database."""
-    i = 0
-    for cache in caches[:]:
-        if (cache.found == 0):
-            caches.remove(cache)
-            i += 1
-    print "Removed", i, "unfound caches from the database"       
-
-
 def DTComboMatrix():
     """Offers user a choice of outputs for caches matching the D/T matrix"""
     #TODO - change so choices return a list of caches which can then be exported from here? maybe?

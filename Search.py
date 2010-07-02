@@ -3,7 +3,7 @@ import utility
 import shlex, subprocess
 import datetime
 import os.path
-from unidecode import unidecode
+#from unidecode import unidecode
 import Output
 
 #TODO: handle exceptions more elegantly
@@ -31,12 +31,12 @@ def searchCaches(caches, search=""):
         print "5) *Set Found"
         print "6) Remove caches"
         print "7) *Send to GPS"
-        print "8) Output to CSV"
+        print "8) *Output to CSV"
         print "9) Output to HTML"
         print "0) *Output to KML/Google Earth (cache saturation circles)"
         print "Any other key to return to main menu"
         choice = raw_input("")
-        actions = {"1": 'searchCaches(caches, search)', "2": 'searchCaches(caches)', "3": 'utility.viewCacheList(cacheList)', "4": 'setFTF(cacheList)', "5": 'setFound(cacheList)', "7": 'outputGPXToGarmin(cacheList)', '0': 'Output.writeKML(cacheList)'}
+        actions = {"1": 'searchCaches(caches, search)', "2": 'searchCaches(caches)', "3": 'utility.viewCacheList(cacheList)', "4": 'setFTF(cacheList)', "5": 'setFound(cacheList)', "7": 'outputGPXToGarmin(cacheList)', '8': 'Output.writeCSV(cacheList)', '0': 'Output.writeKML(cacheList)'}
         print "choice is ", choice, "."
         act = actions.get(choice, "-1")
         eval(act)
@@ -93,7 +93,8 @@ def outputGPXToGarmin(cacheList=[]):
         #<ele>119.088135</ele>
         
         #s='\t<names>' + cache.gcid[:nameLength] + '</name>\n'
-        s = '\t<name>' + unidecode(cache.cacheName[:nameLength]).replace('&', '&amp;').replace('<', '&lt;') + '</name>\n'
+        ####s = '\t<name>' + unidecode(cache.cacheName[:nameLength]).replace('&', '&amp;').replace('<', '&lt;') + '</name>\n'
+        s = '\t<name>' + cache.cacheName[:nameLength].replace('&', '&amp;').replace('<', '&lt;') + '</name>\n'
         #.encode("ascii", "xmlcharrefreplace")
         f.write(s)
         #<name>001</name>

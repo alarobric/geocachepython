@@ -2,6 +2,7 @@
 
 import geopy
 import utility
+import codecs
 
 #icons borrowed from: http://www.thepropers.com/geocaching/60SeriesCustomSymbols.htm
 
@@ -71,10 +72,25 @@ def createCircleKML(f, aLatLonCenter, radius, name='cache'):
 def writeKML(cacheList):
 	filename = utility.saveFileDialog('kml')
 	print filename
-	f = open(filename, 'w')
+	f = codecs.open(filename, 'w', encoding="utf-8", errors="strict")
 	initKML(f)
 	for cache in cacheList:
-		createCircleKML(f, str(cache.lat) + ' ' + str(cache.lon), 0.161)
+		createCircleKML(f, str(cache.lat) + ' ' + str(cache.lon), 0.161, cache.cacheName)
 	closeKML(f)
 	f.close()
 
+def writeCSV(cacheList):
+    filename = utility.saveFileDialog('csv')
+    print filename
+    f = codecs.open(filename, 'w', encoding="utf-8", errors="strict")
+    f.write('GCID,cacheName,Difficulty, Terrain\n')
+    for cache in cacheList:
+        try:
+            f.write("%s,%s,%s,%s\n" %(cache.gcid, cache.cacheName, cache.difficulty, cache.terrain))
+        except UnicodeDecodeError:
+            import sys
+            print sys.stdout.encoding
+            print type(cache.cacheName)
+            print cache.cacheName
+            print cache.cacheName.decode('utf-8')
+    f.close()

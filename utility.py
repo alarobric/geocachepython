@@ -272,7 +272,7 @@ def saveFileDialog(fileType):
     print "The current path is:", path
     print "You're saving a file of type", fileType
     filename = raw_input("Please enter a filename (without the extension): ")
-    return path + '/' + filename + '.' + fileType
+    return path + os.sep + filename + '.' + fileType
     
 if __name__ == '__main__':
     # test myself
