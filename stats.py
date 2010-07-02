@@ -143,7 +143,7 @@ def statsToConsole(caches, homeLocation):
         print "%d find rate: %0.2f/day, %0.2f/week, %0.2f/month - %d finds" % (year, float(len(thisYearsFoundCaches))/daysCaching, float(len(thisYearsFoundCaches))/daysCaching*7, float(len(thisYearsFoundCaches))/daysCaching*30, len(thisYearsFoundCaches))
     thisYearsFoundCaches = [item for item in foundCaches if int(item.dateFound.year) == int(todayDate.year)]
     daysCaching = (todayDate - todayDate.replace(month=1, day=1)).days
-    print "%d find rate: %0.2f/day, %0.2f/week, %0.2f/month - %d finds" % (year, float(len(thisYearsFoundCaches))/daysCaching, float(len(thisYearsFoundCaches))/daysCaching*7, float(len(thisYearsFoundCaches))/daysCaching*30, len(thisYearsFoundCaches))
+    print "%d find rate: %0.2f/day, %0.2f/week, %0.2f/month - %d finds" % (year+1, float(len(thisYearsFoundCaches))/daysCaching, float(len(thisYearsFoundCaches))/daysCaching*7, float(len(thisYearsFoundCaches))/daysCaching*30, len(thisYearsFoundCaches))
     
     print "Average Difficulty: %0.1f" % (averageDifficulty)
     print "Average Terrain: %0.1f" % (averageTerrain)

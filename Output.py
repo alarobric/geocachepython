@@ -1,4 +1,7 @@
+#Output module
+
 import geopy
+import utility
 
 #icons borrowed from: http://www.thepropers.com/geocaching/60SeriesCustomSymbols.htm
 
@@ -25,7 +28,7 @@ def initKML(f):
 def closeKML(f):
     f.write('</Document>\n' + '</kml>\n')
 
-def createCircle(f, aLatLonCenter, radius, name='cache'):
+def createCircleKML(f, aLatLonCenter, radius, name='cache'):
     latLonCenter = geopy.util.parse_geo(aLatLonCenter)
     vertices = []
     angle = 0.0
@@ -65,8 +68,13 @@ def createCircle(f, aLatLonCenter, radius, name='cache'):
             '</Point>\n' +
             '</Placemark>\n')
 
-f = open('outFile.kml', 'w')
-initKML(f)
-createCircle(f, '44.142 -76.512', 0.161)
-closeKML(f)
-f.close()
+def writeKML(cacheList):
+	filename = utility.saveFileDialog('kml')
+	print filename
+	f = open(filename, 'w')
+	initKML(f)
+	for cache in cacheList:
+		createCircleKML(f, str(cache.lat) + ' ' + str(cache.lon), 0.161)
+	closeKML(f)
+	f.close()
+
