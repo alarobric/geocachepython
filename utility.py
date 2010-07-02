@@ -1,10 +1,13 @@
 #UTILITY METHODS
+
+import os
+
 def DMToDD(string):
     """Converts coordinates in Decimal Minute format to Decimal Degree.
     
     Returned as a string with latitude and longitude seperated by a space
     >>> DMToDD('N 44 19.395 W 076 32.595')
-	'44.32325 -76.54325'
+    '44.32325 -76.54325'
     >>> DMToDD('N44 23.1 W72')
     string wrong length
     -1
@@ -81,9 +84,9 @@ def DDToDM(dd, latOrLon=0):
     
     Returns string in pretty output format ex. 'N44 13.323 W76 32.322'
     latOrLon 1-latitude (N or S)
-			 2-longitude (E or W)
-	>>> DDToDM(10.123456789)
-	'10 7.407'
+             2-longitude (E or W)
+    >>> DDToDM(10.123456789)
+    '10 7.407'
     >>> DDToDM(44.32323, 1)
     'N44 19.394'
     >>> DDToDM(-76.54321, 2)
@@ -115,7 +118,7 @@ def toBool(value):
     elif value == "False":
         return False
     else:
-		#TODO raise error
+        #TODO raise error
         return "Error"
         
 def convertToRange(diff):
@@ -257,6 +260,19 @@ def viewCacheList(cacheList):
         print "D:", cache.difficulty, "T:", cache.terrain, cache.cacheType, cache.container
         print 
     return
+
+def saveFileDialog(fileType):
+    #TODO: give more options, change directory
+    #TODO: more leeway
+    
+    path = os.getcwd()  # gets current working directory
+    #fileList = []
+    #dirList = os.listdir(path)
+    
+    print "The current path is:", path
+    print "You're saving a file of type", fileType
+    filename = raw_input("Please enter a filename (without the extension): ")
+    return path + '/' + filename + '.' + fileType
     
 if __name__ == '__main__':
     # test myself

@@ -4,6 +4,7 @@ import shlex, subprocess
 import datetime
 import os.path
 from unidecode import unidecode
+import Output
 
 #TODO: handle exceptions more elegantly
 
@@ -32,9 +33,10 @@ def searchCaches(caches, search=""):
         print "7) *Send to GPS"
         print "8) Output to CSV"
         print "9) Output to HTML"
+        print "0) *Output to KML/Google Earth (cache saturation circles)"
         print "Any other key to return to main menu"
         choice = raw_input("")
-        actions = {"1": 'searchCaches(caches, search)', "2": 'searchCaches(caches)', "3": 'utility.viewCacheList(cacheList)', "4": 'setFTF(cacheList)', "5": 'setFound(cacheList)', "7": 'outputGPXToGarmin(cacheList)'}
+        actions = {"1": 'searchCaches(caches, search)', "2": 'searchCaches(caches)', "3": 'utility.viewCacheList(cacheList)', "4": 'setFTF(cacheList)', "5": 'setFound(cacheList)', "7": 'outputGPXToGarmin(cacheList)', '0': 'Output.writeKML(cacheList)'}
         print "choice is ", choice, "."
         act = actions.get(choice, "-1")
         eval(act)
