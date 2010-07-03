@@ -36,7 +36,7 @@ def readGPX(wpts, timeCreated):
         urlElement = getText(wpt.getElementsByTagName("url")[0].childNodes)
         difficultyElement = getText(wpt.getElementsByTagName("groundspeak:difficulty")[0].childNodes)
         terrainElement = getText(wpt.getElementsByTagName("groundspeak:terrain")[0].childNodes)
-        nameElement = getText(wpt.getElementsByTagName("groundspeak:name")[0].childNodes).encode('utf-8')
+        nameElement = getText(wpt.getElementsByTagName("groundspeak:name")[0].childNodes)
         latElement = wpt.attributes["lat"].value
         lonElement = wpt.attributes["lon"].value
         symElement = getText(wpt.getElementsByTagName("sym")[0].childNodes)
