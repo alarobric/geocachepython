@@ -3,6 +3,7 @@ import utility
 import shlex, subprocess
 import datetime
 import os.path
+import codecs
 #from unidecode import unidecode
 import Output
 
@@ -77,8 +78,7 @@ def outputGPXToGarmin(cacheList=[]):
     today = datetime.datetime.today()
     outFile = "garminOutput" + str(today.date())
     print outFile
-    f = open(outFile, 'w')
-    f = open(outFile, 'w')
+    f = codecs.open(outFile, 'w', 'utf-8', 'xmlcharrefreplace')
     f.write('<?xml version="1.0" encoding="UTF-8"?>\n<gpx version="1.0" \n\tcreator="GeoCachePython alarobric.homeip.net" \n\txmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" \n\txmlns="http://www.topografix.com/GPX/1/0"\n\txsi:schemaLocation="http://www.topografix.com/GPX/1/0 http://www.topografix.com/GPX/1/0/gpx.xsd">\n')
     s = "<time>" + str(today) + "</time>\n"
     f.write(s)

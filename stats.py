@@ -123,6 +123,7 @@ def statsToConsole(caches, homeLocation):
         dayOfWeek[cache.dateFound.isoweekday() - 1] += 1
                     
     typesTotal = sum(types)
+    containersTotal = sum(containers)
     averageDifficulty = (averageDifficulty/len(foundCaches))
     averageTerrain = (averageTerrain/len(foundCaches))
     
@@ -183,7 +184,8 @@ def statsToConsole(caches, homeLocation):
     print "  Type\t\tNumber\tPercentage"
     print "* Traditional: \t%4d%8.1f\n* Multi: \t%4d%8.1f\n* Unknown: \t%4d%8.1f\n* Virtual: \t%4d%8.1f\n* Letterbox: \t%4d%8.1f\n* Earthcache: \t%4d%8.1f\n* Event: \t%4d%8.1f\n* Mega-Event: \t%4d%8.1f" % (types[0], 100.0 * types[0] / typesTotal, types[1], 100.0 * types[1] / typesTotal, types[2], 100.0 * types[2] / typesTotal, types[3], 100.0 * types[3] / typesTotal, types[4], 100.0 * types[4] / typesTotal, types[5], 100.0 * types[5] / typesTotal, types[6], 100.0 * types[6] / typesTotal, types[7], 100.0 * types[7] / typesTotal)
     print "Container types:"
-    print "* Micro: %d\n* Small: %d\n* Regular: %d\n* Large: %d\n* Other: %d\n* Not Chosen: %d\n* Virtual: %d" % (containers[0], containers[1], containers[2], containers[3], containers[4], containers[5], containers[6])
+    print "  Type\t\tNumber\tPercentage"
+    print "* Micro: \t%4d%8.1f\n* Small: \t%4d%8.1f\n* Regular: \t%4d%8.1f\n* Large: \t%4d%8.1f\n* Other: \t%4d%8.1f\n* Not Chosen: \t%4d%8.1f\n* Virtual: \t%4d%8.1f" % (containers[0], 100.0* containers[0] / containersTotal, containers[1], 100.0*containers[1]/containersTotal, containers[2], 100.0*containers[2]/containersTotal, containers[3], 100.0*containers[3]/containersTotal, containers[4], 100.0*containers[4]/containersTotal, containers[5], 100.0*containers[5]/containersTotal, containers[6], 100.0*containers[6]/containersTotal)
     print ""
     matrix = calculateMatrix(caches)
     outputMatrix(matrix)
