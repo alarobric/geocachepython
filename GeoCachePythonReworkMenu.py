@@ -7,16 +7,12 @@ code.google.com/p/geocachepython
 VERSION = '0.5.9'
 
 import xml.dom.minidom
-import os.path
 import pickle
 import zipfile
 import webbrowser
-from geopy import distance, util
+from geopy import distance
 import codecs
 import datetime
-#import time
-#import operator
-import shlex, subprocess
 
 import geocache
 from utility import *
