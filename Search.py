@@ -35,9 +35,10 @@ def searchCaches(caches, search=""):
         print "8) *Output to CSV"
         print "9) Output to HTML"
         print "0) *Output to KML/Google Earth (cache saturation circles)"
+        print "a) Output to county mapper format"
         print "Any other key to return to main menu"
         choice = raw_input("")
-        actions = {"1": 'searchCaches(caches, search)', "2": 'searchCaches(caches)', "3": 'utility.viewCacheList(cacheList)', "4": 'setFTF(cacheList)', "5": 'setFound(cacheList)', "7": 'outputGPXToGarmin(cacheList)', '8': 'Output.writeCSV(cacheList)', '0': 'Output.writeKML(cacheList)'}
+        actions = {"1": 'searchCaches(caches, search)', "2": 'searchCaches(caches)', "3": 'utility.viewCacheList(cacheList)', "4": 'setFTF(cacheList)', "5": 'setFound(cacheList)', "7": 'outputGPXToGarmin(cacheList)', '8': 'Output.writeCSV(cacheList)', '0': 'Output.writeKML(cacheList)', 'a': 'Output.writeCountyMapper(cacheList)'}
         print "choice is ", choice, "."
         act = actions.get(choice, "-1")
         eval(act)
@@ -119,7 +120,7 @@ def outputGPXToGarmin(cacheList=[]):
     p = subprocess.Popen(args, stdout=subprocess.PIPE)
     p.wait()
 
-def parse(search = ""):
+def parse(search = "", s=True):
     """Get a search string from the user and parse it into a dictionary
     
     Optional argument of a previously used search string to display.
@@ -175,7 +176,7 @@ def parse(search = ""):
             help="owner, finds all caches with owners containing your string as a substring")
     #TODO: cacheDate, placedBy, dateFound, dateImported, travelbug, distance from home
 
-    s = True
+    #s=True is now a function parameter
     while (s == True):
         print "Search caches:   -h for help"
         s = False
