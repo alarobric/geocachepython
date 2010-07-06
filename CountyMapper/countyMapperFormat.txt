@@ -1,0 +1,30 @@
+# Format: geocachepython county mapper
+# Author: Alan Richards (alarobric@gmail.com)
+#   Date: 06/07/2010
+#
+
+DESCRIPTION 	 Used by geocachepython for internal use mapping geocaches to counties.
+EXTENSION               gcm
+ENCODING                UTF-8
+DATUM                   WGS 84
+
+#
+# FILE LAYOUT DEFINITIIONS:
+#
+FIELD_DELIMITER	 TAB
+RECORD_DELIMITER	NEWLINE
+BADCHARS	 ,"
+
+PROLOGUE    geocachepython county mapper file
+PROLOGUE	Name	Latitude	Longitude	Description	URL	Type	Container	Diff	Terr
+
+#
+# INDIVIDUAL DATA FIELDS, IN ORDER OF APPEARANCE:
+# NOTE: MS S&T ONLY IMPORTS DATA, IT DOESN'T 
+#       EXPORT THIS ANYWHERE SO WE CAN HAVE OUR 
+#       WAY WITH THE FORMATTING. 
+#
+IFIELD	SHORTNAME, "", "%s"	 # GCID
+IFIELD	LAT_DECIMAL, "", "%f"	 # Latitude
+IFIELD	LON_DECIMAL, "", "%f"	 # Longitude
+IFIELD	DESCRIPTION, "", "%s"	 # Name

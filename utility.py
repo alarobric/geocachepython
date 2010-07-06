@@ -261,7 +261,7 @@ def viewCacheList(cacheList):
         print 
     return
 
-def saveFileDialog(fileType):
+def saveFileDialog(fileType, filename=''):
     #TODO: give more options, change directory
     #TODO: more leeway
     
@@ -269,9 +269,10 @@ def saveFileDialog(fileType):
     #fileList = []
     #dirList = os.listdir(path)
     
-    print "The current path is:", path
-    print "You're saving a file of type", fileType
-    filename = raw_input("Please enter a filename (without the extension): ")
+    if filename == '':
+        print "The current path is:", path
+        print "You're saving a file of type", fileType
+        filename = raw_input("Please enter a filename (without the extension): ")
     return path + os.sep + filename + '.' + fileType
     
 if __name__ == '__main__':

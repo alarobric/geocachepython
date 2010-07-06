@@ -20,6 +20,7 @@ import stats
 import globals
 import HomeLocation
 import Search
+import countyMapper
 
 def readGPX(wpts, timeCreated):
     """Reads through gpx file and updates or appends new caches to global list caches."""
@@ -352,6 +353,9 @@ def preferencesMenu():
     
 def statsToConsoleCall():
     stats.statsToConsole(caches, homeLoc.homeLocation)
+    
+def countyMapperCall():
+    countyMapper.countyMapperMenu(caches)
 
 def mainMenu():
     """Main menu for geocachepython."""
@@ -368,9 +372,10 @@ def mainMenu():
         print "4) Statistics"
         print "9) Preferences"
         print "0) DT Combo Matrix"
+        print "a) County Mapper"
         print "Any other key to quit"
         choice = raw_input("")
-        actions = {"1": importGPX, "9": preferencesMenu, "3": searchCachesCall, "4": statsToConsoleCall, "0": DTComboMatrix}
+        actions = {"1": importGPX, "9": preferencesMenu, "3": searchCachesCall, "4": statsToConsoleCall, "0": DTComboMatrix, "a": countyMapperCall}
         return actions.get(choice, lambda: -1)()
         #print "1) Import GPX/ZIP"
         #print "2) Calculate DT Combo Matrix"
