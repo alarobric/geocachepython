@@ -43,6 +43,8 @@ def countyMapperMenu(caches):
     for cache in cacheList:
         if cache.gcid in gcids.keys():
             cache.county = gcids[cache.gcid]
+        else:
+            print cache.gcid, "was not found in a BC Regional District despite being in BC"
     return
     
 def readCountyMapper(filename, countyName):

@@ -51,6 +51,7 @@ def statsToConsole(caches, homeLocation):
     averageTerrain = 0
     numArchived = 0
     ftfList = []
+    BC_RDs = {}
      
     for cache in foundCaches:
         #TODO - clean up list search
@@ -121,6 +122,12 @@ def statsToConsole(caches, homeLocation):
         if cache.ftf:
             ftfList.append(cache)
         dayOfWeek[cache.dateFound.isoweekday() - 1] += 1
+        if cache.state == "British Columbia":
+            if cache.county != '':
+                try:
+                    BC_RDs[cache.county] += 1
+                except KeyError:
+                    BC_RDs[cache.county] = 1
                     
     typesTotal = sum(types)
     containersTotal = sum(containers)
@@ -155,10 +162,19 @@ def statsToConsole(caches, homeLocation):
         print "FTF List"
         for item in ftfList:
             print "*", item.cacheName
+    else:
+        print "You have no FTFs. If you do in fact have any, don't forget to add them"
     
     print "States cached in:"
     for state in states:
         print "*", state
+    print ""
+        
+    if len(BC_RDs.keys()) > 0:
+        print "In BC, you've cached in these regional districts: "
+        for item in BC_RDs.items():
+            print "%-25s%d" %(item[0],item[1])
+        print ""
     
     print "Countries cached in:"
     for country in countries:
@@ -260,3 +276,10 @@ def statsToHTML():
     print "Stats output to html file: stats.html"
 '''
 #end stats to html
+
+# Check if running as a program
+if __name__ == '__main__':
+     print "Run Debug Suite"
+else:
+     # No, I must have been imported as a module
+     pass
