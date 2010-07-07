@@ -10,12 +10,16 @@ import os, shlex, subprocess
 #gpsbabel -i geo -f 1.loc -x polygon,file=mycounty.txt -o mapsend -F 2.wpt
 
 def countyMapperMenu(caches):
+    #Filters caches given by BC, then tries to assign them to a regional district of BC.
+    
     #Menu to choose province
     print "Will search BC Caches and try to assign counties"
     
-    #TODO: only search caches currently without a county
-    (options, args, search) = Search.parse('-s "British Columbia"', False)
+    #get caches in BC currently without a county
+    (options, args, search) = Search.parse('-s "British Columbia" -O C', False)
     cacheList = Search.parseOptions(caches, options)
+    
+    #write these caches to a file
     filename = writeCountyMapper(cacheList)
     
     BCPolygons = ['BC/Alberni-Clayoquot.arc', 'BC/Bulkley-Nechako.arc', 'BC/Capital.arc',
@@ -28,6 +32,7 @@ def countyMapperMenu(caches):
                 'BC/Peace River.arc', 'BC/Powell River.arc', 'BC/Skeena-Queen Charlotte.arc',
                 'BC/Squamish-Lillooet.arc', 'BC/Stikine.arc', 'BC/Strathcona.arc', 
                 'BC/Sunshine Coast.arc', 'BC/Thompson-Nicola.arc']
+    #call GPSBabel to filter these caches through each polygon, then remove temp files
     gcids = {}
     for polygonName in BCPolygons:
         callPolygonFilter(filename, polygonName, "test.out")
@@ -40,6 +45,7 @@ def countyMapperMenu(caches):
             print polygonName[3:], "does not have caches"
     os.remove(filename)
     
+    #save county name to caches
     for cache in cacheList:
         if cache.gcid in gcids.keys():
             cache.county = gcids[cache.gcid]
