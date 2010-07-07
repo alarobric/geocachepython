@@ -80,6 +80,7 @@ def readGPX(wpts, timeCreated):
                 break
 
         ftfElement = 0
+        countyElement = ''
         
         #unique = 1
         #record = 0
@@ -91,7 +92,7 @@ def readGPX(wpts, timeCreated):
         #        break
 
         #if unique == 1:        
-        tempCache = geocache.Geocache(timeElement, gcidElement, urlElement, difficultyElement, terrainElement, nameElement, latElement, lonElement, symElement, cacheIDElement, availableElement, archivedElement, placedByElement, ownerIDElement, ownerElement, typeElement, containerElement, countryElement, stateElement, shortDescElement, longDescElement, hintElement, dateFoundElement, foundLogIDElement, timeCreated, travelbugElement, ftfElement)
+        tempCache = geocache.Geocache(timeElement, gcidElement, urlElement, difficultyElement, terrainElement, nameElement, latElement, lonElement, symElement, cacheIDElement, availableElement, archivedElement, placedByElement, ownerIDElement, ownerElement, typeElement, containerElement, countryElement, stateElement, shortDescElement, longDescElement, hintElement, dateFoundElement, foundLogIDElement, timeCreated, travelbugElement, ftfElement, countyElement)
         if tempCache.checkUnique(caches) == 1:
             caches.append(tempCache)
         #logs

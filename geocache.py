@@ -6,7 +6,7 @@ class Geocache:
     Further info......
     """
     
-    def __init__(self, cacheDateIN, gcidIN, urlIN, difficultyIN, terrainIN, cacheNameIN, latIN, lonIN, foundIN, cacheIDIN, availableIN, archivedIN, placedByIN, ownerIDIN, ownerIN, cacheTypeIN, containerIN, countryIN, stateIN, shortDescIN, longDescIN, hintIN, dateFoundIN, foundLogIDIN, dateImportedIN, travelbugIN, ftfIN):
+    def __init__(self, cacheDateIN, gcidIN, urlIN, difficultyIN, terrainIN, cacheNameIN, latIN, lonIN, foundIN, cacheIDIN, availableIN, archivedIN, placedByIN, ownerIDIN, ownerIN, cacheTypeIN, containerIN, countryIN, stateIN, shortDescIN, longDescIN, hintIN, dateFoundIN, foundLogIDIN, dateImportedIN, travelbugIN, ftfIN, countyIN):
         """Creates a new Geocache object.
         
         Setting geocache attributes as passed in by parameter.
@@ -38,6 +38,7 @@ class Geocache:
         self.dateImported = dateImportedIN
         self.travelbug = travelbugIN
         self.ftf = ftfIN
+        self.county = countyIN
         #print "cache created in memory successfully"
            
     def checkUpdateCache(self, otherCache):

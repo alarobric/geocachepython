@@ -12,7 +12,7 @@ def writeFile(filename, num, line):
     for point in line:
         try:
             point = point.split(',')
-            out.write('%s\t%s\n' %(point[0], point[1]))
+            out.write('%s\t%s\n' %(point[1], point[0]))
         except IndexError:
             print line
             print point
