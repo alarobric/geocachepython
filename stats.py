@@ -48,6 +48,7 @@ def statsToConsole(caches, homeLocation):
     #containers - micro, small, regular, large, other, not chosen, virtual
     containers = [0, 0, 0, 0, 0, 0, 0]
     dayOfWeek = [0, 0, 0, 0, 0, 0, 0]
+    findMonth = {}
     averageDifficulty = 0
     averageTerrain = 0
     numArchived = 0
@@ -123,13 +124,19 @@ def statsToConsole(caches, homeLocation):
         if cache.ftf:
             ftfList.append(cache)
         dayOfWeek[cache.dateFound.isoweekday() - 1] += 1
+        #TODO: could also use defaultdict
         if cache.state == "British Columbia":
             if cache.county != '':
                 try:
                     BC_RDs[cache.county] += 1
                 except KeyError:
                     BC_RDs[cache.county] = 1
-                    
+        yearMonth = cache.dateFound.strftime("%Y%m")
+        if not yearMonth in findMonth:
+            findMonth[yearMonth] = 1
+        else:
+            findMonth[yearMonth] += 1
+    #end iteration of foundCaches
     typesTotal = sum(types)
     containersTotal = sum(containers)
     averageDifficulty = (averageDifficulty/len(foundCaches))
@@ -188,6 +195,12 @@ def statsToConsole(caches, homeLocation):
         url = url[:-1] + "&chf=ff0000&w=450&h=450&map=BC"
         print url
         print ""
+    
+    months = findMonth.keys()
+    months.sort()
+    print "Finds by month"
+    for month in months:
+        print "You had", findMonth[month], "finds in", month[:4], "-", month[4:6]
             
     daysofWeek = ['Monday:    ', 'Tuesday:   ', 'Wednesday: ', 'Thursday:  ', 'Friday:    ', 'Saturday: ', 'Sunday:    ']  
     print
@@ -214,6 +227,8 @@ def statsToConsole(caches, homeLocation):
     print ""
     matrix = calculateMatrix(caches)
     outputMatrix(matrix)
+    print ""
+
         
 
 def statsToHTML():
