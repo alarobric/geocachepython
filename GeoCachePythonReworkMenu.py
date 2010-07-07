@@ -12,6 +12,7 @@ import zipfile
 import webbrowser
 from geopy import distance
 import codecs
+import logging
 import datetime
 
 import geocache
@@ -21,6 +22,12 @@ import globals
 import HomeLocation
 import Search
 import countyMapper
+
+    #log.debug("This is debug.")
+    #log.info("This is info.")
+    #log.warn("Warning!  Things are getting scary.")
+    #log.error("Uh-oh, something is wrong.")
+    #log.exception("Just like error, but with a traceback.") use only in try: except: block
 
 def readGPX(wpts, timeCreated):
     """Reads through gpx file and updates or appends new caches to global list caches."""
@@ -58,7 +65,6 @@ def readGPX(wpts, timeCreated):
         travelbugsElements = wpt.getElementsByTagName("groundspeak:travelbug")
         travelbugID, travelbugREF, travelbugName = [], [], []
         for j in travelbugsElements:
-            #print i
             travelbugID.append(j.attributes["id"].value)
             travelbugREF.append(j.attributes["ref"].value)
             travelbugName.append(getText(j.getElementsByTagName("groundspeak:name")[0].childNodes))
@@ -68,32 +74,23 @@ def readGPX(wpts, timeCreated):
         logs = logsElement[0].getElementsByTagName("groundspeak:log")
         dateFoundElement = "" #TODO - check this makes sense
         foundLogIDElement = "" #TODO - and this
-        for log in logs:
-            logDate = getText(log.getElementsByTagName("groundspeak:date")[0].childNodes)
-            logType = getText(log.getElementsByTagName("groundspeak:type")[0].childNodes)
-            logID = log.attributes["id"].value
+        for cacheLog in logs:
+            logDate = getText(cacheLog.getElementsByTagName("groundspeak:date")[0].childNodes)
+            logType = getText(cacheLog.getElementsByTagName("groundspeak:type")[0].childNodes)
+            logID = cacheLog.attributes["id"].value
             if (logType == "Found it" or logType == "Attended"):
                 dateFoundElement = datetime.date(int(logDate[:4]), int(logDate[5:7]), int(logDate[8:10]))
                 #dateFoundElement = datetime.date(*time.strptime(logDate[:10], "%Y-%m-%d")[0:5])
-                print "Found cache %s" % (logDate)
                 foundLogIDElement = logID
                 break
 
         ftfElement = 0
         countyElement = ''
-        
-        #unique = 1
-        #record = 0
-        #for cache in caches:
-        #    if cache.gcid == gcidElement:
-        #        print "Cache exists:", gcidElement
-        #        unique = 0
-        #        record = i
-        #        break
-
-        #if unique == 1:        
+      
         tempCache = geocache.Geocache(timeElement, gcidElement, urlElement, difficultyElement, terrainElement, nameElement, latElement, lonElement, symElement, cacheIDElement, availableElement, archivedElement, placedByElement, ownerIDElement, ownerElement, typeElement, containerElement, countryElement, stateElement, shortDescElement, longDescElement, hintElement, dateFoundElement, foundLogIDElement, timeCreated, travelbugElement, ftfElement, countyElement)
+        log.info("Created temporary cache: %s" %(nameElement))
         if tempCache.checkUnique(caches) == 1:
+            log.debug("Cache unique - adding to list")
             caches.append(tempCache)
         #logs
 
@@ -129,7 +126,6 @@ def searchMatrix(matrix, output):
             elif output == 4:
                 exportHTML(cache, outFile)
     if output == 4:
-        print "showHTML"
         showHTML(outFile)
 
 def pickGPX():
@@ -137,7 +133,6 @@ def pickGPX():
     
     Offers user a choice of all zip and gpx files in the working directory. Gets query name from gpx for more detail.
     """
-    #print os.name
     path = os.getcwd()  # gets current working directory
     fileList = []
     dirList = os.listdir(path)
@@ -172,7 +167,7 @@ def pickGPX():
             return xml.dom.minidom.parse(fname)
         elif ext == "zip":
             zipped = zipfile.ZipFile(fname, "r")
-            print zipped.namelist(), "files in zip"
+            log.debug("%s files in zip" %(zipped.namelist()))
             #need to check this exists
             gpx = zipped.read(fname[:-4] + ".gpx")
             xmldom = xml.dom.minidom.parseString(gpx)
@@ -180,7 +175,7 @@ def pickGPX():
             return xmldom
             #can possibly clean this up a little
         else:
-            print "ERROR - somehow selected a file that is not gpx or zip"
+            log.error("somehow selected a file that is not gpx or zip")
     print "No choice"
     return -1
 
@@ -188,7 +183,7 @@ def loadDatabase():
     """Loads saved database on startup"""
     caches = []
     homeLoc = HomeLocation.HomeLocation()
-    print len(caches)
+    log.debug("%d caches before loading database" %len(caches))
     #choice = raw_input("Load previous data.pkl file? ")
     choice = "y"
     if choice == "Y" or choice == "y":
@@ -197,13 +192,11 @@ def loadDatabase():
             pkl_file = open('geoDatabase.pkl', 'rb')
             homeLoc = pickle.load(pkl_file)
             caches = pickle.load(pkl_file)
-            print "Number of records loaded:", len(caches)
-            print "Locations loaded:", homeLoc.homeName
+            log.info("Number of records loaded: %d", len(caches))
+            log.info("Locations loaded: %s" %homeLoc.homeName)
             pkl_file.close()
         except IOError:
-            print "No geoDatabase.pkl file found, no records loaded"
-    #if len(caches) == 0:
-    #	return [homeLoc, []]
+            log.error("No geoDatabase.pkl file found, no records loaded")
     return [homeLoc, caches]
 
 #saves database on exit
@@ -320,12 +313,13 @@ def importGPX():
         numWpts = len(wpts)
 
         if (getText(description.childNodes) != "Geocache file generated by Groundspeak"):
-            print "NOT A VALID FILE"
+            log.critical("NOT A VALID FILE")
+            return
 
         printHeader(name, timeCreated, numWpts)
-        print len(caches), "before reading"
+        log.info("%d before reading" %(len(caches)))
         readGPX(wpts, getText(timeCreated.childNodes))
-        print len(caches), "after"
+        log.info("%d after" %(len(caches)))
           
 def buildListOfGCID():
     """Gets a list of gcids from the user and returns the list."""
@@ -339,8 +333,6 @@ def buildListOfGCID():
 
 def searchCachesCall():
     list = Search.searchCaches(caches)
-    print "in searchCachesCall"
-    print len(list)
 
 def preferencesMenu():
     act = 0
@@ -391,8 +383,37 @@ def mainMenu():
         #print "9) Debug/Output GPX to Garmin"   
 
 #main
-[homeLoc, caches] = loadDatabase()
-menuChoice = mainMenu()
-while menuChoice != -1:
+if '__main__' == __name__:
+    # Late import, in case this project becomes a library, never to be run as main again.
+    import optparse
+
+    # Populate our options, -h/--help is already there for you.
+    optp = optparse.OptionParser()
+    optp.add_option('-v', '--verbose', dest='verbose', action='count',
+                    help="Increase verbosity (specify multiple times for more)")
+    # Parse the arguments (defaults to parsing sys.argv).
+    opts, args = optp.parse_args()
+
+    # Here would be a good place to check what came in on the command line and
+    # call optp.error("Useful message") to exit if all it not well.
+
+    log_level = logging.WARNING # default
+    if opts.verbose == 1:
+        log_level = logging.INFO
+    elif opts.verbose >= 2:
+        log_level = logging.DEBUG
+
+    # Set up basic configuration, out to stderr with a reasonable default format.
+    log = logging.getLogger('geocachepython')
+    console = logging.StreamHandler()
+    log.addHandler(console)
+    log.setLevel(log_level)
+
+    # Do some actual work.
+    log.debug("Starting geocachepython")
+    [homeLoc, caches] = loadDatabase()
     menuChoice = mainMenu()
-saveDatabase()
+    while menuChoice != -1:
+        menuChoice = mainMenu()
+    saveDatabase()
+    log.debug("Exiting geocachepython")
