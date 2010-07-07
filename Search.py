@@ -172,6 +172,8 @@ def parse(search = "", s=True):
             help="country, can either use exact string used by groundspeak or possibly 2digit country code, ex. CA,US")
     parser.add_option("-s", "--state", dest="state",
             help="state/province, use exact string used by groundspeak, or US or CA state codes, ex. BC,WA,NY,ON")
+    parser.add_option("-O", "--county", dest="county",
+            help="county, use exact string or two character shortcode (see help for both) - C to get all caches without a county")
     parser.add_option("-o", "--owner", dest="owner",
             help="owner, finds all caches with owners containing your string as a substring")
     #TODO: cacheDate, placedBy, dateFound, dateImported, travelbug, distance from home
@@ -340,6 +342,16 @@ def parseOptions(caches, options):
         states = options.state.split(",")
         for cache in cacheList[:]:
             if cache.state not in states:
+                cacheList.remove(cache)
+    if options.county:
+        #TODO: add county codes
+        print "county", options.county
+        counties = options.county.split(",")
+        if counties == ["C"]:
+            print "YES"
+            counties = [""]
+        for cache in cacheList[:]:
+            if cache.county not in counties:
                 cacheList.remove(cache)
     return cacheList
 

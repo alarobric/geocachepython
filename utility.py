@@ -245,6 +245,23 @@ def countryCode(countries):
     return countryList 
     #more country codes at http://www.iso.org/iso/english_country_names_and_code_elements
     
+def BC_RDName_to_code(name):
+    BCDict = {
+        'Alberni-Clayoquot': 'AC', 'Bulkley-Nechako': 'BN', 'Capital': 'CP', 'Cariboo': 'CA', 
+        'Central Coast': 'CC', 'Central Kootenay': 'CK', 'Central Okanagan': 'CO', 
+        'Columbia-Shuswap': 'CS', 'Comox Valley': 'CV', 'Cowichan Valley': 'CW', 'East Kootenay': 'EK', 
+        'Fraser Valley': 'FV', 'Fraser-Fort George': 'FG', 'Greater Vancouver': 'GV', 
+        'Kitimat-Stikine': 'KS', 'Kootenay Boundary': 'KB',  'Mount Waddington': 'MW', 'Nanaimo': 'NA', 
+        'North Okanagan': 'NO', 'Northern Rockies': 'NR', 'Okanagan-Similkameen': 'OS',
+        'Peace River': 'PR', 'Powell River': 'PW', 'Skeena-Queen Charlotte': 'QC',
+        'Squamish-Lillooet': 'SL', 'Stikine': 'ST', 'Strathcona': 'SR', 
+        'Sunshine Coast': 'SC', 'Thompson-Nicola': 'TN'
+    }
+    if (BCDict.get(name, "") != ""):
+        return BCDict.get(name)
+    else:
+        raise Exception("Not a valid county name")
+
 def viewCacheList(cacheList):
     """View Cache List"""
     #If lots of caches, get users confirmation

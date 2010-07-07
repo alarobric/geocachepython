@@ -2,6 +2,7 @@
 
 import datetime
 from utility import DDToDM, initializeMatrix, convertToRange, outputMatrix
+import utility
 
 def calculateMatrix(caches):
     """Calculates D/T matrix.
@@ -165,6 +166,10 @@ def statsToConsole(caches, homeLocation):
     else:
         print "You have no FTFs. If you do in fact have any, don't forget to add them"
     
+    print "Countries cached in:"
+    for country in countries:
+        print "*", country
+        
     print "States cached in:"
     for state in states:
         print "*", state
@@ -174,11 +179,15 @@ def statsToConsole(caches, homeLocation):
         print "In BC, you've cached in these regional districts: "
         for item in BC_RDs.items():
             print "%-25s%d" %(item[0],item[1])
+        url = "http://alarobric.homeip.net/geocacheicons/Chart_Regions.php?chld="
+        for item in BC_RDs.keys():
+            url = url + utility.BC_RDName_to_code(item) + ","
+        url = url[:-1] + "&chd="
+        for item in BC_RDs.values():
+            url = url + str(item) + ","
+        url = url[:-1] + "&chf=ff0000&w=450&h=450&map=BC"
+        print url
         print ""
-    
-    print "Countries cached in:"
-    for country in countries:
-        print "*", country
             
     daysofWeek = ['Monday:    ', 'Tuesday:   ', 'Wednesday: ', 'Thursday:  ', 'Friday:    ', 'Saturday: ', 'Sunday:    ']  
     print
