@@ -1,5 +1,9 @@
 #homeLocation
+import logging
+
 from utility import DMToDD
+
+log = logging.getLogger('geocachepython.HomeLocation')
 
 class HomeLocation():
     def __init__(self):
@@ -38,7 +42,7 @@ class HomeLocation():
                 
     def setCurrentLocation(self):
         """Reorder the list of current locations to set a new home."""
-        print "set main location"
+        print "Set main location"
         choice = raw_input("Enter number of location to promote: ")
         if choice == str(int(choice)) and int(choice) >= 0 and int(choice) < len(self.homeName):
             self.homeName.insert(0, self.homeName.pop(int(choice)))
@@ -65,5 +69,9 @@ class HomeLocation():
             return 1
         return 0
 
-if __name__ == "__main__":
-    print "Doesn't do anything when run as script"
+# Check if running as a program
+if __name__ == '__main__':
+     print "Run Debug Suite"
+else:
+     # No, I must have been imported as a module
+     pass

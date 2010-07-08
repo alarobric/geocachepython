@@ -1,4 +1,8 @@
+import logging
+
 from geopy import distance, util
+
+log = logging.getLogger('geocachepython.Geocache')
 
 class Geocache: 
     """Geocache class - Describes all attributes of a geocache.
@@ -46,34 +50,34 @@ class Geocache:
         
         oldDate = otherCache.dateImported
         newDate = self.dateImported
-        #print "Date of old cache:", oldDate, "Date of new cache:", newDate
+        log.debug("Date of old cache: %s. Date of new cache: %s" %(oldDate,newDate))
         if oldDate == newDate:
-            print "Same import date, no updates were made"
+            log.debug("Same import date, no updates were made")
             return 0
         else:
-            print "Dates differ update necessary"
+            log.debug("Dates differ update necessary")
             #need to check which is newer - 
             #TODO change to straight alphabetical check
-            print "year:", newDate[:4]
+            log.debug("year: %s"  %newDate[:4])
             if newDate[:4] > oldDate[:4]:
-                print "newer year"
+                log.debug("newer year")
                 self.updateCache(otherCache)
                 return 1
             elif newDate[:4] == oldDate[:4]:
-                print "month:", newDate[5:7]
+                log.debug("month: %s" %newDate[5:7])
                 if newDate[5:7] > oldDate[5:7]:
-                    print "newer month"
+                    log.debug("newer month")
                     self.updateCache(otherCache)
                     return 1
                 elif newDate[5:7] == oldDate[5:7]:
-                    print "day:", newDate[8:10]
+                    log.debug("day: %s" %newDate[8:10])
                     if newDate[8:10] > oldDate[8:10]:
-                        print "newer day"
+                        log.debug("newer day")
                         self.updateCache(otherCache)
                         return 1
                     elif newDate[8:10] == oldDate[8:10]:
-                        print "same day - check times"
-            print "Must be older"
+                        log.debug("same day - check times")
+            log.debug("Must be older")
             return 0
                     
     def updateCache(self, otherCache):
@@ -81,7 +85,7 @@ class Geocache:
         
         ftf status is unchanged, since this cannot be imported
         """
-        print "updating cache..."
+        log.debug("updating cache...")
         otherCache.cacheDate = self.cacheDate
         otherCache.gcid = self.gcid
         otherCache.url = self.url
@@ -117,11 +121,11 @@ class Geocache:
         """
         for otherCache in caches:
             if otherCache.gcid == self.gcid:
-                print "Possible match: ",
+                log.debug("Possible match: ")
                 if self.checkUpdateCache(otherCache):
-                    print "updated cache"
+                    log.debug("updated cache")
                 else:
-                    print "nothing new"
+                    log.debug("nothing new")
                 return 0
         return 1
         

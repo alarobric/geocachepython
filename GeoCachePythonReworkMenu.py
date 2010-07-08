@@ -18,7 +18,6 @@ import datetime
 import geocache
 from utility import *
 import stats
-import globals
 import HomeLocation
 import Search
 import countyMapper
@@ -393,8 +392,6 @@ if '__main__' == __name__:
                     help="Increase verbosity (specify multiple times for more)")
     # Parse the arguments (defaults to parsing sys.argv).
     opts, args = optp.parse_args()
-
-    # Here would be a good place to check what came in on the command line and
     # call optp.error("Useful message") to exit if all it not well.
 
     log_level = logging.WARNING # default

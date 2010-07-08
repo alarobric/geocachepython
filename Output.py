@@ -4,6 +4,9 @@ import geopy
 import codecs
 import utility
 import codecs
+import logging
+
+log = logging.getLogger('geocachepython.Output')
 
 #icons borrowed from: http://www.thepropers.com/geocaching/60SeriesCustomSymbols.htm
 
@@ -72,7 +75,7 @@ def createCircleKML(f, aLatLonCenter, radius, name='cache'):
 
 def writeKML(cacheList):
 	filename = utility.saveFileDialog('kml')
-	print filename
+	log.debug(filename)
 	f = codecs.open(filename, 'w', encoding="utf-8", errors="strict")
 	initKML(f)
 	for cache in cacheList:
@@ -82,16 +85,19 @@ def writeKML(cacheList):
 
 def writeCSV(cacheList):
     filename = utility.saveFileDialog('csv')
-    print filename
+    log.debug(filename)
     f = codecs.open(filename, 'w', encoding="utf-8", errors="strict")
     f.write('GCID,cacheName,Difficulty, Terrain\n')
     for cache in cacheList:
         try:
             f.write("%s,%s,%s,%s\n" %(cache.gcid, cache.cacheName, cache.difficulty, cache.terrain))
         except UnicodeDecodeError:
-            import sys
-            print sys.stdout.encoding
-            print type(cache.cacheName)
-            print cache.cacheName
-            print cache.cacheName.decode('utf-8')
+            log.critical('Unicode error')
     f.close()
+    
+# Check if running as a program
+if __name__ == '__main__':
+     print "Run Debug Suite"
+else:
+     # No, I must have been imported as a module
+     pass

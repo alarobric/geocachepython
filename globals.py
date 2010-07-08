@@ -1,3 +1,0 @@
-#globals.py
-
-caches = []

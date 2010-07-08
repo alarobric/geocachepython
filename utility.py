@@ -1,6 +1,9 @@
 #UTILITY METHODS
 
+import logging
 import os
+
+log = logging.getLogger('geocachepython')
 
 def DMToDD(string):
     """Converts coordinates in Decimal Minute format to Decimal Degree.
@@ -21,7 +24,7 @@ def DMToDD(string):
         elif string[:2] == "S ":
             negLat = 1
         else:
-            print "Error: No N or S at start of coords"
+            log.error("Error: No N or S at start of coords")
             return -1
         lat = int(string[2:4])
         minute = float(string[5:11])
@@ -35,7 +38,7 @@ def DMToDD(string):
         elif string[12:14] == "E ":
             pass
         else:
-            print "Error: No W or E or otherwise invalid format"
+            log.error("Error: No W or E or otherwise invalid format")
             return -1
         lon = int(string[14:17])
         minute = float(string[18:24])
@@ -53,7 +56,7 @@ def DMToDD(string):
         elif string[:1] == "S":
             negLat = 1
         else:
-            print "Error: No N or S at start of coords"
+            log.error("Error: No N or S at start of coords")
             return -1
         lat = int(string[1:3])
         minute = float(string[4:10])
@@ -69,7 +72,7 @@ def DMToDD(string):
         elif string[:1] == "E":
             pass
         else:
-            print "Error: No W or E or otherwise invalid format"
+            log.error("Error: No W or E or otherwise invalid format")
             return -1
         lon = int(string[1:4])
         minute = float(string[5:11])
@@ -119,7 +122,7 @@ def toBool(value):
         return False
     else:
         #TODO raise error
-        return "Error"
+        raise Exception('Error converting to bool')
         
 def convertToRange(diff):
     """Converts a difficulty or terrain rating (1,1.5-5) to integer (1-9)
@@ -221,7 +224,7 @@ def stateCode(states):
         if (stateDict.get(state, "") != ""):
             stateList = stateList + (stateDict.get(state))
         else:
-            print "ERROR: State not recognised:", state
+            log.error("State not recognised: %s" %state)
     return stateList              
     
 def countryCode(countries):
@@ -241,7 +244,7 @@ def countryCode(countries):
         if (countryDict.get(country, "") != ""):
             countryList = countryList + (countryDict.get(country))
         else:
-            print "ERROR: Country not recognised:", country
+            log.error("Country not recognised: %s" %country)
     return countryList 
     #more country codes at http://www.iso.org/iso/english_country_names_and_code_elements
     
@@ -292,7 +295,11 @@ def saveFileDialog(fileType, filename=''):
         filename = raw_input("Please enter a filename (without the extension): ")
     return path + os.sep + filename + '.' + fileType
     
+    # Check if running as a program
 if __name__ == '__main__':
     # test myself
     import doctest
     doctest.testmod()
+else:
+     # No, I must have been imported as a module
+     pass

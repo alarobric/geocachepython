@@ -105,3 +105,10 @@ def debug():
                 pass
             else:
                 print cache.cacheType, cache.gcid
+
+# Check if running as a program
+if __name__ == '__main__':
+     print "Run Debug Suite"
+else:
+     # No, I must have been imported as a module
+     pass

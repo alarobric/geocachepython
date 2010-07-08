@@ -5,9 +5,12 @@ import utility
 
 import codecs
 import os, shlex, subprocess
+import logging
 
 #gpsbabel -i gpx -f mine.gpx -o xcsv,style=mystyle.style -F mine.new
 #gpsbabel -i geo -f 1.loc -x polygon,file=mycounty.txt -o mapsend -F 2.wpt
+
+log = logging.getLogger('geocachepython.countyMapper')
 
 def countyMapperMenu(caches):
     #Filters caches given by BC, then tries to assign them to a regional district of BC.
@@ -39,10 +42,9 @@ def countyMapperMenu(caches):
         gcids.update(readCountyMapper(os.path.join(os.getcwd(), 'test.out'), polygonName[3:-4]))
         os.remove("test.out")
         if len(gcids) > 0:
-            print polygonName[3:], "has caches"
-            #save county name to cache
+            log.info("%s has caches" %(polygonName[3:]))
         else:
-            print polygonName[3:], "does not have caches"
+            log.info("%s does not have caches" %(polygonName[3:]))
     os.remove(filename)
     
     #save county name to caches
@@ -50,7 +52,7 @@ def countyMapperMenu(caches):
         if cache.gcid in gcids.keys():
             cache.county = gcids[cache.gcid]
         else:
-            print cache.gcid, "was not found in a BC Regional District despite being in BC"
+            log.error("%s was not found in a BC Regional District despite being in BC" %cache.gcid)
     return
     
 def readCountyMapper(filename, countyName):
@@ -73,7 +75,7 @@ def callPolygonFilter(filename, polygonFileName, outputFileName):
     
 def writeCountyMapper(cacheList):
     filename = utility.saveFileDialog('gcm', 'countyMapper')
-    print filename
+    log.debug('county mapper filename: %s' %filename)
     f = codecs.open(filename, 'w', encoding='utf-8', errors='strict')
     for cache in cacheList:
         f.write("%s\t%s\t%s\t%s\n" %(cache.gcid, cache.lat, cache.lon, cache.cacheName))

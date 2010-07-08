@@ -1,19 +1,23 @@
 #stats.py
 
 import datetime
-from utility import DDToDM, initializeMatrix, convertToRange, outputMatrix
+import logging
+
 import utility
+from GChart import GChart
+
+log = logging.getLogger('geocachepython.stats')
 
 def calculateMatrix(caches):
     """Calculates D/T matrix.
     
-    Calls initializeMatrix(), then loops through caches and fills matrix - currently only 1 or 0.
+    Calls utility.initializeMatrix(), then loops through caches and fills matrix - currently only 1 or 0.
     """
     #TODO: mechanism for knowing how many caches of each combo
-    matrix = initializeMatrix()
+    matrix = utility.initializeMatrix()
     for cache in caches:
         if (cache.found == 1):
-            matrix[convertToRange(cache.difficulty) - 1][convertToRange(cache.terrain) - 1] = 1
+            matrix[utility.convertToRange(cache.difficulty) - 1][utility.convertToRange(cache.terrain) - 1] = 1
     return matrix
 
 def statsToConsole(caches, homeLocation):
@@ -100,7 +104,7 @@ def statsToConsole(caches, homeLocation):
         elif cache.cacheType == "Mega-Event Cache":
             types = [types[0], types[1], types[2], types[3], types[4], types[5], types[6], types[7]+1]
         else:
-            print cache.cacheType
+            log.error('New cache type unhandled: %s' %cache.cacheType)
         if cache.container == "Micro":
             containers = [containers[0]+1, containers[1], containers[2], containers[3], containers[4], containers[5], containers[6]]
         elif cache.container == "Small":
@@ -116,7 +120,7 @@ def statsToConsole(caches, homeLocation):
         elif cache.container == "Virtual":
             containers = [containers[0], containers[1], containers[2], containers[3], containers[4], containers[5], containers[6]+1]
         else:
-            print cache.container
+            log.error('New container unhandled: %s' %cache.container)
         averageDifficulty += float(cache.difficulty)
         averageTerrain += float(cache.terrain)
         if cache.archived:
@@ -186,21 +190,18 @@ def statsToConsole(caches, homeLocation):
         print "In BC, you've cached in these regional districts: "
         for item in BC_RDs.items():
             print "%-25s%d" %(item[0],item[1])
-        url = "http://alarobric.homeip.net/geocacheicons/Chart_Regions.php?chld="
-        for item in BC_RDs.keys():
-            url = url + utility.BC_RDName_to_code(item) + ","
-        url = url[:-1] + "&chd="
-        for item in BC_RDs.values():
-            url = url + str(item) + ","
-        url = url[:-1] + "&chf=ff0000&w=450&h=450&map=BC"
-        print url
+        map = GChart("http://alarobric.homeip.net/geocacheicons/Chart_Regions.php?")
+        map.addOpt(['chld', reduce(lambda x,y: x + ',' + y, [utility.BC_RDName_to_code(a) for a in BC_RDs.keys()])])
+        map.addOpt(['chd', reduce(lambda x,y: str(x) + ',' + str(y), BC_RDs.values()), 
+                    'chf', 'ff0000', 'w', '450', 'h', '450', 'map', 'BC'])
+        #map.view()
         print ""
     
     months = findMonth.keys()
     months.sort()
     print "Finds by month"
     for month in months:
-        print "You had", findMonth[month], "finds in", month[:4], "-", month[4:6]
+        print "You had %3d finds in %s-%s" %(findMonth[month], month[:4], month[4:6])
             
     daysofWeek = ['Monday:    ', 'Tuesday:   ', 'Wednesday: ', 'Thursday:  ', 'Friday:    ', 'Saturday: ', 'Sunday:    ']  
     print
@@ -213,10 +214,10 @@ def statsToConsole(caches, homeLocation):
     print "Newest cache found:\n* %s - %s - %s" % (newest[0], newest[1], newest[2])
     print "Closest cache found:\n* %s - %0.1fkm - %s" % (closest[0], closest[1], closest[2])
     print "Farthest cache found:\n* %s - %0.1fkm - %s" % (farthest[0], farthest[1], farthest[2])
-    print "Most Westerly Cache:\n* %s - %s - %s" % (west[0], DDToDM(west[1], 2), west[2])
-    print "Most Easterly Cache:\n* %s - %s - %s" % (east[0], DDToDM(east[1], 2), east[2])
-    print "Most Northerly Cache:\n* %s - %s - %s" % (north[0], DDToDM(north[1], 1), north[2])
-    print "Most Southerly Cache:\n* %s - %s - %s" % (south[0], DDToDM(south[1], 1), south[2])
+    print "Most Westerly Cache:\n* %s - %s - %s" % (west[0], utility.DDToDM(west[1], 2), west[2])
+    print "Most Easterly Cache:\n* %s - %s - %s" % (east[0], utility.DDToDM(east[1], 2), east[2])
+    print "Most Northerly Cache:\n* %s - %s - %s" % (north[0], utility.DDToDM(north[1], 1), north[2])
+    print "Most Southerly Cache:\n* %s - %s - %s" % (south[0], utility.DDToDM(south[1], 1), south[2])
     print
     print "Cache types:"
     print "  Type\t\tNumber\tPercentage"
@@ -226,7 +227,7 @@ def statsToConsole(caches, homeLocation):
     print "* Micro: \t%4d%8.1f\n* Small: \t%4d%8.1f\n* Regular: \t%4d%8.1f\n* Large: \t%4d%8.1f\n* Other: \t%4d%8.1f\n* Not Chosen: \t%4d%8.1f\n* Virtual: \t%4d%8.1f" % (containers[0], 100.0* containers[0] / containersTotal, containers[1], 100.0*containers[1]/containersTotal, containers[2], 100.0*containers[2]/containersTotal, containers[3], 100.0*containers[3]/containersTotal, containers[4], 100.0*containers[4]/containersTotal, containers[5], 100.0*containers[5]/containersTotal, containers[6], 100.0*containers[6]/containersTotal)
     print ""
     matrix = calculateMatrix(caches)
-    outputMatrix(matrix)
+    utility.outputMatrix(matrix)
     print ""
 
         
@@ -275,10 +276,10 @@ def statsToHTML():
     print "Newest cache found:\n* %s - %s - %s" % (newest[0], newest[1], newest[2])
     print "Closest cache found:\n* %s - %0.1fkm - %s" % (closest[0], closest[1], closest[2])
     print "Farthest cache found:\n* %s - %0.1fkm - %s" % (farthest[0], farthest[1], farthest[2])
-    print "Most Westerly Cache:\n* %s - %s - %s" % (west[0], DDToDM(west[1], 2), west[2])
-    print "Most Easterly Cache:\n* %s - %s - %s" % (east[0], DDToDM(east[1], 2), east[2])
-    print "Most Northerly Cache:\n* %s - %s - %s" % (north[0], DDToDM(north[1], 1), north[2])
-    print "Most Southerly Cache:\n* %s - %s - %s" % (south[0], DDToDM(south[1], 1), south[2])
+    print "Most Westerly Cache:\n* %s - %s - %s" % (west[0], utility.DDToDM(west[1], 2), west[2])
+    print "Most Easterly Cache:\n* %s - %s - %s" % (east[0], utility.DDToDM(east[1], 2), east[2])
+    print "Most Northerly Cache:\n* %s - %s - %s" % (north[0], utility.DDToDM(north[1], 1), north[2])
+    print "Most Southerly Cache:\n* %s - %s - %s" % (south[0], utility.DDToDM(south[1], 1), south[2])
     print
     print "Cache types:"
     print "  Type\t\tNumber\tPercentage"
@@ -287,7 +288,7 @@ def statsToHTML():
     print "* Micro: %d\n* Small: %d\n* Regular: %d\n* Large: %d\n* Other: %d\n* Not Chosen: %d\n* Virtual: %d" % (containers[0], containers[1], containers[2], containers[3], containers[4], containers[5], containers[6])
     print ""
     matrix = calculateMatrix()
-    outputMatrix(matrix)
+    utility.outputMatrix(matrix)
     
     
 

@@ -1,11 +1,14 @@
 #Search module
-import utility
 import shlex, subprocess
 import datetime
 import os.path
 import codecs
-#from unidecode import unidecode
+import logging
+
+import utility
 import Output
+
+log = logging.getLogger('geocachepython.Search')
 
 #TODO: handle exceptions more elegantly
 
@@ -19,7 +22,7 @@ def searchCaches(caches, search=""):
     (options, args, search) = parse(search)
     
     if args:
-        raise Exception("No Args please, ARGHHHHH!")
+        log.error("No Args please, ARGHHHHH!")
     cacheList = parseOptions(caches, options)
     
     act = 0
@@ -39,7 +42,7 @@ def searchCaches(caches, search=""):
         print "Any other key to return to main menu"
         choice = raw_input("")
         actions = {"1": 'searchCaches(caches, search)', "2": 'searchCaches(caches)', "3": 'utility.viewCacheList(cacheList)', "4": 'setFTF(cacheList)', "5": 'setFound(cacheList)', "7": 'outputGPXToGarmin(cacheList)', '8': 'Output.writeCSV(cacheList)', '0': 'Output.writeKML(cacheList)', 'a': 'Output.writeCountyMapper(cacheList)'}
-        print "choice is ", choice, "."
+        log.debug("choice is %s" %choice)
         act = actions.get(choice, "-1")
         eval(act)
     return cacheList
@@ -114,7 +117,7 @@ def outputGPXToGarmin(cacheList=[]):
     f.close()
     
     os.getcwd()
-    args = "sudo gpsbabel -i gpx -f " + "'" + os.getcwd() + "/" + outFile + "' -o garmin -F /dev/ttyUSB0"
+    args = "sudo gpsbabel -i gpx -f " + "'" + os.getcwd() + os.sep() + outFile + "' -o garmin -F /dev/ttyUSB0"
     args = shlex.split(args)
     #print args
     p = subprocess.Popen(args, stdout=subprocess.PIPE)
@@ -188,10 +191,10 @@ def parse(search = "", s=True):
         if search == "-h":
             parser.print_help()
             s = True
-    print shlex.split(search)
+    log.debug(shlex.split(search))
     (options, args) = parser.parse_args(shlex.split(search))
-    print options
-    print "args", args
+    log.debug(options)
+    log.debug("args %s" %args)
     return (options, args, search)
    
 def parseOptions(caches, options):
@@ -355,7 +358,11 @@ def parseOptions(caches, options):
                 cacheList.remove(cache)
     return cacheList
 
+    # Check if running as a program
 if __name__ == '__main__':
     print "Running tests:"
     import doctest
     doctest.testmod()
+else:
+     # No, I must have been imported as a module
+     pass
